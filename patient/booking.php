@@ -21,47 +21,36 @@
 <body>
     <?php
 
-    //learn from w3schools.com
+session_start();
 
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
-            header("location: ../login.php");
-        }else{
-            $useremail=$_SESSION["user"];
-        }
-
-    }else{
+if (isset($_SESSION["user"])) {
+    if ($_SESSION["user"] == "" || $_SESSION['usertype'] != 'p') {
         header("location: ../login.php");
+    } else {
+        $useremail = $_SESSION["user"];
     }
-    
+} else {
+    header("location: ../login.php");
+}
 
-    //import database
-    include("../connection.php");
+// Import database connection
+include("../connection.php");
 
-    $sqlmain= "select * from patient where pemail=?";
-    $stmt = $database->prepare($sqlmain);
-    $stmt->bind_param("s",$useremail);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $userfetch=$userrow->fetch_assoc();
-    $userid= $userfetch["pid"];
-    $username=$userfetch["pname"];
+// Fetch user details
+$sqlmain = "SELECT * FROM patient WHERE pemail=?";
+$stmt = $database->prepare($sqlmain);
+$stmt->bind_param("s", $useremail);
+$stmt->execute();
+$result = $stmt->get_result();
+$userfetch = $result->fetch_assoc();
+$userid = $userfetch["pid"];
+$username = $userfetch["pname"];
 
+// Set timezone and get today's date
+date_default_timezone_set('Asia/Kolkata');
+$today = date('Y-m-d');
+?>
 
-    //echo $userid;
-    //echo $username;
-    
-
-
-    date_default_timezone_set('Asia/Kolkata');
-
-    $today = date('Y-m-d');
-
-
- //echo $userid;
- ?>
  <div class="container">
      <div class="menu">
      <table class="menu-container" border="0">
